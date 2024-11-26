@@ -1,0 +1,159 @@
+ .img1 {
+            width: 200px;
+            height: 250px;
+        }
+
+        .box1 {
+            width: 200px;
+            height: 250px;
+        }
+
+        #map {
+            width: 100%;
+            height: 350px;
+        }
+
+        .member {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #fff;
+            border: 1px solid #eef0ef;
+            height: 600px;
+        }
+
+        .img2 {
+            width: 40px;
+            height: 40px;
+            bottom: 0;
+            margin: 10px 0 0 20px;
+
+        }
+        
+.login {
+	font-weight: bold;
+}
+
+.login-bottom {
+	font-size: small;
+	font-weight: bold;
+	display: flex;
+	justify-content: space-between;
+}
+
+.member {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.btn, .form-control {
+	margin: 5px 0;
+}
+
+header, footer {
+	width: 100%;
+}
+
+.prev,
+.next {
+  position: absolute;
+  bottom:120px;
+  transform: translateY(-50%);
+  /* 화살표 위치 조절 */
+}
+
+.prev {
+  left: 10px;
+  z-index: 2;
+  /* 좌측 화살표 z-index 설정 */
+}
+
+.next {
+  right: 10px;
+  z-index: 2;
+  /* 우측 화살표 z-index 설정 */
+}
+#content > article > div.slideshow-container{
+ position: relative;
+  z-index: 1;
+}
+
+/* 04.25 추가 */
+#login-area {
+	padding: 10px;
+	padding-right: 28px;
+}
+
+.welcome-text .name {
+	color: #02b875;
+	font-weight: bold;
+}
+
+.welcome-text .id {
+	font-size: 18px;
+}
+
+.login-menu {
+	display: flex;
+	justify-content: space-around;
+}
+
+.login-after hr {
+	border-color: #adb5bd;
+}
+
+.login-menu a {
+	font-weight: bold;
+}
+
+.article-middle{
+	display: flex;
+	flex-direction: column;
+	margin: 10px;
+}
+
+.profile-list {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.member-card {
+	width: 30%;
+	margin-bottom: 10px;
+}
+
+.card-header {
+	color: #02b875;
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.card-body {
+	display: flex;
+	justify-content: space-between;
+}
+
+.card-text {
+	font-size: 15px;
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.card-footer-text {
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+
+.box-excerpt {
+	font-size: 15px;
+}
+

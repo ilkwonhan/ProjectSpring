@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Project.ProjectDao">
+
+   <select id="getProjectList" parameterType="com.champit.intra.vo.Project" resultType="com.champit.intra.vo.Project">
+		SELECT *
+        FROM Project
+        WHERE 1 = 1
+	</select>
+
+
+</mapper>

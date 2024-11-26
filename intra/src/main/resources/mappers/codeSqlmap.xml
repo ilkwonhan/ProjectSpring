@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Code.CodeDao">
+
+   <select id="getCodeList" parameterType="com.champit.intra.vo.Code" resultType="com.champit.intra.vo.Code">
+		SELECT code1
+			 , code2
+			 , code_name
+			 , memo
+			 , memo2
+        FROM code
+        WHERE 1 = 1
+		ORDER BY code1
+	</select>
+
+
+</mapper>

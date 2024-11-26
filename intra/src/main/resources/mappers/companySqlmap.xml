@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Company.CompanyDao">
+
+	<select id="getSelectCompany" parameterType="String" resultType="com.champit.intra.vo.Company">
+		SELECT * FROM company
+	</select>
+
+	<select id="getLoginCompany" parameterType="String" resultType="String">
+		SELECT emp_no
+          FROM company
+		 WHERE login_id = #{login_id}
+		   AND login_pw = #{login_pw}
+	</select>
+
+	<select id="getImgChk" parameterType="String" resultType="com.champit.intra.vo.Company">
+		SELECT photo_id
+          FROM company 
+         WHERE photo_id = #{photo_id}
+	</select>
+
+	<select id="overlappedID" parameterType="String" resultType="_boolean">
+		SELECT CASE WHEN COUNT(*) = 1 THEN 1 ELSE 0 END AS loginChk
+          FROM company
+		 WHERE login_id = #{login_id}
+	</select>
+
+	<update id="updateCompany">
+		UPDATE company
+		SET login_id 		= #{login_id}
+			, login_pw 		= #{login_pw}
+			, name 			= #{name}
+			, rank_c 		= #{rank_c}
+			, in_d 			= #{in_d}
+			, prjt_id 		= #{prjt_id}
+			, emp_c 		= #{emp_c}
+			, photo_id 		= #{photo_id}
+			, aut_c 		= #{aut_c}
+			, ucamp 		= #{ucamp}
+			, depart_cd 	= #{depart_cd}
+			, ssn 			= #{ssn}
+			, sex_cd 		= #{sex_cd}
+			, snh_in_d 		= #{snh_in_d}
+			, memo 			= #{memo}
+			, payment_date 	= #{payment_date}
+		WHERE emp_no 		= #{emp_no}
+	</update> 
+
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Insert.InsertDao">
+	<insert id="insertEmp">
+		INSERT INTO emp 
+		(
+			emp_no
+			, bth_d
+			, bth_c
+			, hm_phn_1
+			, hm_phn_2
+			, hm_phn_3
+			, mb_phn_1
+			, mb_phn_2
+			, mb_phn_3
+			, off_phn_1
+			, off_phn_2
+			, off_phn_3
+			, hm_adr_1
+			, hm_adr_2
+			, email
+			, hm_zip
+			, em_phn_1
+			, em_phn_2
+			, em_phn_3
+		) VALUES
+		(
+			#{emp_no}
+			, #{bth_d}
+			, #{bth_c}
+			, #{hm_phn_1}
+			, #{hm_phn_2}
+			, #{hm_phn_3}
+			, #{mb_phn_1}
+			, #{mb_phn_2}
+			, #{mb_phn_3}
+			, #{off_phn_1}
+			, #{off_phn_2}
+			, #{off_phn_3}
+			, #{hm_adr_1}
+			, #{hm_adr_2}
+			, #{email}
+			, #{hm_zip}
+			, #{em_phn_1}
+			, #{em_phn_2}
+			, #{em_phn_3}
+		)
+	</insert>
+	<insert id="insertCompany">
+		INSERT INTO company 
+		(
+			emp_no
+			, login_id
+			, login_pw
+			, name
+			, rank_c
+			, in_d
+			, prjt_id
+			, emp_c
+			, photo_id
+			, aut_c
+			, ucamp
+			, depart_cd
+			, ssn
+			, sex_cd
+			, snh_in_d
+			, memo
+			, payment_date
+		) VALUES
+		(
+			#{emp_no}
+			, #{login_id}
+			, #{login_pw}
+			, #{name}
+			, #{rank_c}
+			, #{in_d}
+			, #{prjt_id}
+			, #{emp_c}
+			, #{photo_id}
+			, #{aut_c}
+			, #{ucamp}
+			, #{depart_cd}
+			, #{ssn}
+			, #{sex_cd}
+			, #{snh_in_d}
+			, #{memo}
+			, #{payment_date}
+		)
+	</insert>
+	<insert id="insertCareer">
+		INSERT INTO career 
+		(
+			emp_no
+			, out_com_yy
+			, out_com_mm
+			, out_etc_yy
+			, out_etc_mm
+			, promotion_ym
+			, schedule_ym
+			, school_cd
+			, license_cd
+			, military_cd
+		) VALUES
+		(
+			#{emp_no}
+			, #{out_com_yy}
+			, #{out_com_mm}
+			, #{out_etc_yy}
+			, #{out_etc_mm}
+			, #{promotion_ym}
+			, #{schedule_ym}
+			, #{school_cd}
+			, #{license_cd}
+			, #{military_cd}
+		)
+	</insert>
+
+
+</mapper>

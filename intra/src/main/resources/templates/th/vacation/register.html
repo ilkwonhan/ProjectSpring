@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}"
+>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- This CSS -->
+
+</head>
+
+<body>
+	<div style="text-align: left;">
+		<h1 style="margin-bottom: 10px;">휴가 등록</h1>
+	</div>
+	<div>
+		<table border="1" style="width: 100%;;">
+			<tr style="text-align: center;">
+				<td style="width: 20%;">
+					휴가일자
+				</td>
+				<td style="width: 20%;">
+					구분
+				</td>
+				<td style="width: 20%;">
+					사유
+				</td>
+				<td style="width: 20%;">
+					인수자
+				</td>
+			</tr>
+			<tr style="text-align: center;">
+				<td style="width: 25%;">
+					<input type="date" name="v_date_1" id="v_date_1"><button type="button" id="v_date_1_d">삭제</button><br>
+					<input type="date" name="v_date_2" id="v_date_2"><button type="button" id="v_date_2_d">삭제</button><br>
+					<input type="date" name="v_date_3" id="v_date_3"><button type="button" id="v_date_3_d">삭제</button><br>
+					<input type="date" name="v_date_4" id="v_date_4"><button type="button" id="v_date_4_d">삭제</button><br>
+				</td>
+				<td style="width: 15%;">
+					<select name="vacationS" id="vacationS">
+						<option th:each="code : ${codeList}" th:if="${code.code1} == '048'" th:value="${code.code2}">[[${code.memo}]]</option>
+					</select>
+				</td>
+				<td style="width: 20%;">
+					<input type="text" name="reason" id="reason"><br>
+				</td>
+				<td style="width: 20%;">
+					<input type="text" name="acpt_nm" id="acpt_nm"><br>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="bottom" >
+		<div class="" style="width:100%" align="right">
+			<button type="submit" class="btn btn-success register_b" style="margin-top: 10px;">확인</button>
+			<button type="button" class="btn btn-secondary cancel_b">취소</button>
+		</div>
+	</div>
+</body>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$('#v_date_1_d').click(function(){
+			console.log($('#v_date_1').val());
+			$('#v_date_1').val('');
+		});
+
+	</script>
+</th:block>
+</html>

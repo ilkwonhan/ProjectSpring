@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "file.root",
+    "type": "java.lang.String",
+    "description": "A description for 'file.root'"
+  },
+  {
+    "name": "discord.webhookURL",
+    "type": "java.lang.String",
+    "description": "A description for 'discord.webhookURL'"
+  }
+]}

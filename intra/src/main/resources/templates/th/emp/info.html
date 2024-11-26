@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}"
+>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	td {height: 30px;}
+	.labelTd {text-align: center; width: 180px;}
+	.inputTd {width: 250px;}
+	.phn {width: 50px;}
+	.ssnClass {width: 100px;}
+	.lbl {background-color: rgb(199, 197, 197);}
+
+	.modal-address {
+            display: none; 
+            position: fixed; 
+            z-index: 20000; 
+            left: 25%;
+            width: 50%;
+            padding: 20px;
+            border: 1px solid #333;
+            background-color: white;
+            border-radius: 20px;
+	}
+	.popup-wrap {
+			border: 1px solid #333;
+	}
+</style>
+<!-- kakaoMap key -->
+<script type="text/javascript"></script>
+
+<!-- This CSS -->
+
+</head>
+
+<body>
+	<div style="text-align: center;">
+		<h1 th:text="${emp.Company.name} + ' 등록정보 수정'"></h1>
+	</div>
+	<div align="center">
+		<form th:action="@{/th/emp/info}" th:method="post" id="form" enctype="multipart/form-data">
+			<table id="ins_tbl">
+				<tr>
+					<td colspan="6">
+						<label style="padding-left: 10px;">※회사정보</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">사원번호</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" placeholder="성별선택 시 자동입력" name="emp_no" id="emp_no" th:value="${emp.emp_no}" disabled>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">입사일자</label>
+					</td>
+					<td class="inputTd">
+						<input type="date" max="9999-12-31" name="in_d" id="in_d" th:value="${emp.Company.in_d}">
+					</td>
+					<td colspan="2" rowspan="5" class="thumb-box-zone" >
+						<div class="thumb-box">
+							<div class="thumb">
+								<img id="photo_upload" th:src="@{/img/emp} + ${emp.Company.photo_id}" style="width: 150px;">
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">이름</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" name="name" id="name" th:value="${emp.Company.name}">
+
+					</td>
+					<td class="labelTd">
+						<label class="lbl">직급</label>
+					</td>
+					<td class="inputTd">
+						<select name="rank_c" id="rank_c" style="width:178px">
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '008'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.Company.rank_c}">[[${code.memo}]]</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">프로젝트</label>
+					</td>
+					<td class="inputTd">
+						<select name="prjt_id" id="prjt_id" style="width:178px">
+							<option th:each="project, projectStat : ${projectList}" th:selected="${project.prjt_id} == ${emp.Company.prjt_id}"
+							th:value="${project.prjt_id}">[[${project.prjt_nm}]]</option>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">직원구분</label>
+					</td>
+					<td class="inputTd">
+						<select name="emp_c" id="emp_c" style="width:178px">
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '007'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.Company.emp_c}">[[${code.memo}]]</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">현재 비밀번호</label>
+					</td>
+					<td class="inputTd">
+						<input type="hidden" 	name="login_pw_prev" 	id="login_pw_prev" 		th:value="${emp.Company.login_pw}">
+						<input type="password" 	name="login_pw_now" 	id="login_pw_now">
+						<input type="button"  	name="login_pw_now_btn" id="login_pw_now_btn" 	value="확인" onclick="passwdChk()">
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl" id="login_pw_lbl" style="display: none;">비밀번호</label>
+					</td>
+					<td class="inputTd">
+						<input type="password" name="login_pw" id="login_pw" style="display: none;" disabled>
+					</td>
+					<td class="labelTd">
+						<label class="lbl" id="relogin_pw_lbl" style="display: none;">비밀번호 확인</label>
+					</td>
+					<td class="inputTd">
+						<input type="password" name="relogin_pw" id="relogin_pw" style="display: none;" disabled>
+						<label class="lbl" id="new_passwd_chk_lbl"></label>
+						<span id="new_passwd_chk_spn"></span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" >
+					</td>
+					<td colspan="3" style="text-align: right;" class="imgFile-zone">
+						<b>※ 첨부하는 파일은 <font color="red" size="3">1MB</font> 로 제한 되어 있습니다.</b><input type="file" name="photo_up" id="photo_up" accept=".jpg,.png,.jpeg" onchange="loadImg(this)">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label style="padding-left: 10px;">※개인정보</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">생년월일</label>
+					</td>
+					<td class="inputTd">
+						<input type="date" max="9999-12-31" name="bth_d" id="bth_d" th:value="${emp.bth_d}">
+						<input type="radio" name="bth_c" id="bth_c_n" value="N" th:checked="${emp.bth_c} == 'N'">음력
+						<input type="radio" name="bth_c" id="bth_c_s" value="S" th:checked="${emp.bth_c} == 'S'">양력
+					</td>
+					<td class="labelTd">
+						<label class="lbl">성별</label>
+					</td>
+					<td class="inputTd">
+						<select name="sex_cd" id="sex_cd" style="width:178px" onchange="javascript:emp_noChange()">
+							<option value="0">미선택</option>
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '003'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.Company.sex_cd}">[[${code.memo}]]</option>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">긴급연락처</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" class="phn" name="em_phn_1" id="em_phn_1" maxlength="3" th:value="${emp.em_phn_1}">-
+						<input type="text" class="phn" name="em_phn_2" id="em_phn_2" maxlength="4" th:value="${emp.em_phn_2}">-
+						<input type="text" class="phn" name="em_phn_3" id="em_phn_3" maxlength="4" th:value="${emp.em_phn_3}">
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">자택전화</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" class="phn" name="hm_phn_1" id="hm_phn_1" maxlength="3" th:value="${emp.hm_phn_1}">-
+						<input type="text" class="phn" name="hm_phn_2" id="hm_phn_2" maxlength="4" th:value="${emp.hm_phn_2}">-
+						<input type="text" class="phn" name="hm_phn_3" id="hm_phn_3" maxlength="4" th:value="${emp.hm_phn_3}">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">휴대전화</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" class="phn" name="mb_phn_1" id="mb_phn_1" maxlength="3" th:value="${emp.mb_phn_1}">-
+						<input type="text" class="phn" name="mb_phn_2" id="mb_phn_2" maxlength="4" th:value="${emp.mb_phn_2}">-
+						<input type="text" class="phn" name="mb_phn_3" id="mb_phn_3" maxlength="4" th:value="${emp.mb_phn_3}">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">근무지전화</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" class="phn" name="off_phn_1" id="off_phn_1" maxlength="3" th:value="${emp.off_phn_1}">-
+						<input type="text" class="phn" name="off_phn_2" id="off_phn_2" maxlength="4" th:value="${emp.off_phn_2}">-
+						<input type="text" class="phn" name="off_phn_3" id="off_phn_3" maxlength="4" th:value="${emp.off_phn_3}">
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">주소</label>
+					</td>
+					<td colspan="5">
+						<input type="text" id="hm_zip" placeholder="우편번호" th:value="${emp.hm_zip}">
+						<input type="button" onclick="sample2_execDaumPostcode()" value="우편번호 찾기">
+						<input type="text" id="hm_adr_1" placeholder="주소" style="width: 350px;" th:value="${emp.hm_adr_1}">
+						<input type="text" id="hm_adr_2" placeholder="상세주소" style="width: 350px;" th:value="${emp.hm_adr_2}">
+						<input type="hidden" id="sample2_extraAddress" placeholder="참고항목">
+						<div id="layer" style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;">
+							<img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" onclick="closeDaumPostcode()" alt="닫기 버튼">
+						<div>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">아이디</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" name="login_id" id="login_id" th:value="${emp.Company.login_id}">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">이메일</label>
+					</td>
+					<td class="inputTd" colspan="3">
+						<input type="text" name="email1" id="email1">@
+						<input type="text" name="email2" id="email2">
+						<SELECT name="selectDomain" id="selectDomain" SIZE="1" onChange="emailSelect()">
+							<option value="champit.co.kr">champit.co.kr</option>
+							<option value="gmail.com" 	 >gmail.com</option>
+							<option value="hanmail.net"  >hanmail.net</option>
+							<option value="hotmail.com"  >hotmail.com</option>
+							<OPTION VALUE="nate.com" 	 >nate.com</OPTION>
+							<option value="naver.com" 	 >naver.com</option>
+							<OPTION value="" 	 selected>기타</OPTION>
+					</SELECT>
+					<script th:inline="javascript">
+						var email = /*[[${emp.email}]]*/
+
+						console.log(email.split("@")[0] + " " + email.split("@")[1]);
+						document.getElementById('email1').value = email.split("@")[0];
+						document.getElementById('email2').value = email.split("@")[1];
+						
+						console.log(document.getElementById('selectDomain').length);
+						for(var i = 0; i < document.getElementById('selectDomain').length - 1; i++) {
+							switch (email.split("@")[1]) {
+								case "champit.co.kr": document.getElementById('selectDomain').value = "champit.co.kr";
+													  break;
+								case "gmail.com"	: document.getElementById('selectDomain').value = "gmail.com";
+													  break;
+								case "hanmail.net"	: document.getElementById('selectDomain').value = "hanmail.net";
+													  break;
+								case "hotmail.com"	: document.getElementById('selectDomain').value = "hotmail.com";
+													  break;
+								case "nate.com"		: document.getElementById('selectDomain').value = "nate.com";
+													  break;
+								case "naver.com"	: document.getElementById('selectDomain').value = "naver.com";
+													  break;
+								default : document.getElementById('selectDomain').value = "";
+							}
+						}
+					  </script>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">권한</label>
+					</td>
+					<td class="inputTd">
+						<select name="aut_c" id="aut_c" style="width:178px">
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '042'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.Company.aut_c}">[[${code.memo}]]</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<label style="padding-left: 10px;">※기타정보</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">사외전산경력년월</label>
+					</td>
+					<td class="inputTd">
+						<input type="month" name="outCom" id="outCom" th:value="${emp.career.out_com_yy} == '0' ? '' : ${emp.career.out_com_yy} + '-' + (${emp.career.out_com_mm} < 10 ? '0' + ${emp.career.out_com_mm} : ${emp.career.out_com_mm})">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">사외비전산경력년월</label>
+					</td>
+					<td class="inputTd">
+						<input type="month" name="outEtc" id="outEtc" th:value="${emp.career.out_etc_yy} == '0' ? '' : ${emp.career.out_etc_yy} + '-' + (${emp.career.out_etc_mm} < 10 ? '0' + ${emp.career.out_etc_mm} : ${emp.career.out_etc_mm})">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">진급년월/진급예정년월</label>
+					</td>
+					<td class="inputTd">
+						<input type="month" name="promotion_ym" id="promotion_ym" th:value="${emp.career.promotion_ym} == '' ? '' : ${emp.career.promotion_ym}">
+						<input type="month" name="schedule_ym" id="schedule_ym" th:value="${emp.career.promotion_ym} == '' ? '' : ${emp.career.promotion_ym}">
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">학력</label>
+					</td>
+					<td class="inputTd">
+						<select name="school_cd" id="school_cd" style="width:178px">
+							<option value="0" selected>미입력</option>
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '006'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.career.school_cd}">[[${code.memo}]]</option>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">자격증</label>
+					</td>
+					<td class="inputTd">
+						<select name="license_cd" id="license_cd" style="width:178px">
+							<option value="0" selected>미입력</option>
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '005'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.career.license_cd}">[[${code.memo}]]</option>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">병역</label>
+					</td>
+					<td class="inputTd">
+						<select name="military_cd" id="military_cd" style="width:178px">
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '046'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.career.military_cd}">[[${code.memo}]]</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">주민번호</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" class="ssnClass" name="ssn1" id="ssn1" th:value="${#strings.substring(emp.Company.ssn, 0, 6)}">
+						<input type="text" class="ssnClass" name="ssn2" id="ssn2" th:value="${#strings.substring(emp.Company.ssn, 6, 13)}">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">부서</label>
+					</td>
+					<td class="inputTd">
+						<select name="depart_cd" id="depart_cd" style="width:178px">
+							<option value="0">미입력</option>
+							<option th:each="code : ${codeList}" th:if="${code.code1} == '043'" th:value="${code.code2}" th:selected="${code.code2} == ${emp.Company.depart_cd}">[[${code.memo}]]</option>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">UCAMP기수</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" name="ucamp" id="ucamp" th:value="${emp.Company.ucamp}">
+					</td>
+				</tr>
+				<tr>
+					<td class="labelTd">
+						<label class="lbl">급여지급일</label>
+					</td>
+					<td class="inputTd">
+						<select name="payment_date" id="payment_date" style="width:178px">
+							<th:block th:each="num : ${#numbers.sequence(1,31)}">
+								<option th:value="${num}" th:text="${num} lt 10 ? '0' + ${num} : ${num}" th:selected="${num} == ${emp.Company.payment_date}" >
+								</option>
+							</th:block>
+						</select>
+					</td>
+					<td class="labelTd">
+						<label class="lbl">SNH입사일자</label>
+					</td>
+					<td class="inputTd">
+						<input type="date" max="9999-12-31" name="snh_in_d" id="snh_in_d" th:value="${emp.Company.snh_in_d}">
+					</td>
+					<td class="labelTd">
+						<label class="lbl">메모</label>
+					</td>
+					<td class="inputTd">
+						<input type="text" name="memo" id="memo" th:value="${emp.Company.memo}">
+					</td>
+				</tr>
+			</table>
+			
+
+		</form>
+	</div>
+
+	<div id="bottom" >
+		<div class="" style="width:1500px" align="right">
+			<button type="submit" class="btn btn-success register_b">확인</button>
+			<button type="button" class="btn btn-secondary cancel_b">취소</button>
+		</div>
+	</div>
+</body>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		
+		var actionForm = $("form"); //form 태그 객체
+	    $(".register_b").click(function() {
+			document.getElementById('emp_no').disabled = 'false';
+			console.log('emp_no: ' + document.getElementById('emp_no').value);
+			document.getElementById('emp_no').disabled = 'true';
+			console.log('in_d: ' + document.getElementById('in_d').value);
+			console.log('name: ' + document.getElementById('name').value);
+			console.log('rank_c: ' + document.getElementById('rank_c').value);
+			console.log('prjt_id: ' + document.getElementById('prjt_id').value);
+			console.log('emp_c: ' + document.getElementById('emp_c').value);
+			console.log('login_pw: ' + document.getElementById('login_pw').value);
+			console.log('relogin_pw: ' + document.getElementById('relogin_pw').value);
+			console.log('bth_d: ' + document.getElementById('bth_d').value);
+			bth_c = document.getElementById('bth_c_s').checked ? 'S' : 'N';
+			console.log('bth_c: ' + bth_c);
+			console.log('sex_cd: ' + document.getElementById('sex_cd').value);
+			console.log('photo_upload: ' + document.getElementById('photo_upload').value);
+			console.log('hm_phn_1: ' + document.getElementById('hm_phn_1').value);
+			console.log('hm_phn_2: ' + document.getElementById('hm_phn_2').value);
+			console.log('hm_phn_3: ' + document.getElementById('hm_phn_3').value);
+			console.log('mb_phn_1: ' + document.getElementById('mb_phn_1').value);
+			console.log('mb_phn_2: ' + document.getElementById('mb_phn_2').value);
+			console.log('mb_phn_3: ' + document.getElementById('mb_phn_3').value);
+			console.log('off_phn_1: ' + document.getElementById('off_phn_1').value);
+			console.log('off_phn_2: ' + document.getElementById('off_phn_2').value);
+			console.log('off_phn_3: ' + document.getElementById('off_phn_3').value);
+			console.log('em_phn_1: ' + document.getElementById('em_phn_1').value);
+			console.log('em_phn_2: ' + document.getElementById('em_phn_2').value);
+			console.log('em_phn_3: ' + document.getElementById('em_phn_3').value);
+			console.log('hm_zip: ' + document.getElementById('hm_zip').value);
+			console.log('hm_adr_1: ' + document.getElementById('hm_adr_1').value);
+			console.log('hm_adr_2: ' + document.getElementById('hm_adr_2').value);
+			console.log('login_id: ' + document.getElementById('login_id').value);
+			console.log('email1: ' + document.getElementById('email1').value);
+			console.log('email2: ' + document.getElementById('email2').value);
+			console.log('selectDomain: ' + document.getElementById('selectDomain').value);
+			console.log('aut_c: ' + document.getElementById('aut_c').value);
+			console.log('outCom: ' + document.getElementById('outCom').value);
+			console.log('outEtc: ' + document.getElementById('outEtc').value);
+			console.log('promotion_ym: ' + document.getElementById('promotion_ym').value);
+			console.log('schedule_ym: ' + document.getElementById('schedule_ym').value);
+			console.log('school_cd: ' + document.getElementById('school_cd').value);
+			console.log('license_cd: ' + document.getElementById('license_cd').value);
+			console.log('military_cd: ' + document.getElementById('military_cd').value);
+			console.log('ssn1: ' + document.getElementById('ssn1').value);
+			console.log('ssn2: ' + document.getElementById('ssn2').value);
+			console.log('depart_cd: ' + document.getElementById('depart_cd').value);
+			console.log('ucamp: ' + document.getElementById('ucamp').value);
+			console.log('payment_date: ' + document.getElementById('payment_date').value);
+			console.log('snh_in_d: ' + document.getElementById('snh_in_d').value);
+			console.log('memo: ' + document.getElementById('memo').value);
+			
+			if(document.getElementById('emp_no').value == '') alert("성별을 입력하세요.");
+			/*
+			else if(document.getElementById('name').value == '') alert("이름을 입력하세요.");
+			else if(document.getElementById('mb_phn_1').value == '' || document.getElementById('mb_phn_2').value == '' || document.getElementById('mb_phn_3').value == '') alert("전화번호를 입력하세요.");
+			else if(document.getElementById('hm_zip').value == '' || document.getElementById('hm_adr_1').value == '' || document.getElementById('hm_adr_2').value == '') alert("주소를 입력하세요.");
+			else if(document.getElementById('login_id').value == '') alert("아이디를 입력하세요.");
+			else if(document.getElementById('email1').value == '') alert("이메일을 입력하세요.");
+			else if(document.getElementById('email2').value == '' && document.getElementById('selectDomain').value == '') alert("이메일을 입력하세요.");
+			*/
+			else if(confirm("입력하신 데이터로 수정하시겠습니까?")) {
+			
+				postsSave();
+			} else alert("최소되었습니다.");
+			
+
+	    });
+
+		var photo_id = /*[[${emp.Company.photo_id}]]*/
+		function postsSave() {
+			
+			var data = {
+				
+				emp_no: document.getElementById('emp_no').value,
+				//th/emp
+				bth_d: 		document.getElementById('bth_d').value.replaceAll("-", ""),
+				bth_c: 		document.getElementById('bth_c_s').checked ? 'S' : 'N',
+				hm_phn_1: 	document.getElementById('hm_phn_1').value,
+				hm_phn_2: 	document.getElementById('hm_phn_2').value,
+				hm_phn_3: 	document.getElementById('hm_phn_3').value,
+				mb_phn_1: 	document.getElementById('mb_phn_1').value,
+				mb_phn_2: 	document.getElementById('mb_phn_2').value,
+				mb_phn_3: 	document.getElementById('mb_phn_3').value,
+				off_phn_1: 	document.getElementById('off_phn_1').value,
+				off_phn_2:	document.getElementById('off_phn_2').value,
+				off_phn_3: 	document.getElementById('off_phn_3').value,
+				hm_adr_1: 	document.getElementById('hm_adr_1').value,
+				hm_adr_2: 	document.getElementById('hm_adr_2').value,
+				email: 		document.getElementById('email1').value + "@" + document.getElementById('email2').value,
+				hm_zip: 	document.getElementById('hm_zip').value,
+				em_phn_1: 	document.getElementById('em_phn_1').value,
+				em_phn_2: 	document.getElementById('em_phn_2').value,
+				em_phn_3: 	document.getElementById('em_phn_3').value,
+
+				//company
+				login_id: document.getElementById('login_id').value,
+				login_pw: document.getElementById('login_pw').value == '' ? document.getElementById('login_pw_prev').value : document.getElementById('login_pw').value,
+				name: 	document.getElementById('name').value,
+				rank_c: document.getElementById('rank_c').value,
+				in_d: document.getElementById('in_d').value.replaceAll("-", ""),
+				prjt_id: document.getElementById('prjt_id').value,
+				emp_c: document.getElementById('emp_c').value,
+				photo_upload: document.getElementById('photo_upload').value != '' ? document.getElementById('photo_upload').value : photo_id,
+				aut_c: document.getElementById('aut_c').value,
+				ucamp: document.getElementById('ucamp').value,
+				depart_cd: document.getElementById('depart_cd').value,
+				ssn: document.getElementById('ssn1').value + document.getElementById('ssn2').value,
+				sex_cd: document.getElementById('sex_cd').value,
+				snh_in_d: document.getElementById('snh_in_d').value.replaceAll("-", ""),
+				memo: document.getElementById('memo').value,
+				payment_date: document.getElementById('payment_date').value,
+
+				//career
+				out_com_yy: document.getElementById('outCom').value != '' ? document.getElementById('outCom').value.replace("-", "").substring(0, 4) : "0",
+				out_com_mm: document.getElementById('outCom').value != '' ? document.getElementById('outCom').value.replace("-", "").substring(5, 6) : "0",
+				out_etc_yy: document.getElementById('outEtc').value != '' ? document.getElementById('outEtc').value.replace("-", "").substring(0, 4) : "0",
+				out_etc_mm: document.getElementById('outEtc').value != '' ? document.getElementById('outEtc').value.replace("-", "").substring(5, 6) : "0",
+				promotion_ym: document.getElementById('promotion_ym').value != '' ? document.getElementById('promotion_ym').value.replace("-", "") : document.getElementById('promotion_ym').value,
+				schedule_ym: document.getElementById('schedule_ym').value != '' ? document.getElementById('schedule_ym').value.replace("-", "") : document.getElementById('schedule_ym').value,
+				school_cd: document.getElementById('school_cd').value,
+				license_cd: document.getElementById('license_cd').value,
+				military_cd: document.getElementById('military_cd').value
+			};
+			
+
+			var form =$('#form')[0];
+			var formData = new FormData(form);
+			formData.append('key', 'update');
+			formData.append('data', new Blob([JSON.stringify(data)] , {type: "application/json"}));
+			formData.append('file', $("#photo_up")[0].files[0]);
+			console.log(formData);
+			
+			$.ajax({
+				type: 'POST',
+				url: '/th/emp/register',
+				dataType:"html",
+				processData: false,
+				contentType: false,
+				data: formData,
+			}).done(function() {
+				alert('수정되었습니다.');
+				window.location.href = '/th/emp/list';
+			}).fail(function (error) {
+				alert(JSON.stringify(error));
+			});
+			
+		}
+
+		// 취소 버튼    
+		$(".cancel_b").click(function() {
+			if(confirm('취소하시겠습니까?'))
+				window.location.href = '/th/emp/list'
+		})
+		
+		
+	</script>
+
+</th:block>
+
+<script language="javascript">
+	
+	function passwdChk() {
+		var login_pw_prev 	= document.getElementById('login_pw_prev');
+		var login_pw_now 	= document.getElementById('login_pw_now');
+
+		if(login_pw_prev.value == login_pw_now.value) {
+			if(confirm('비밀번호를 변경하시겠습니까?')) {
+				var login_pw_lbl 	= document.getElementById('login_pw_lbl');
+				var relogin_pw_lbl 	= document.getElementById('relogin_pw_lbl');
+				var login_pw 		= document.getElementById('login_pw');
+				var relogin_pw 		= document.getElementById('relogin_pw');
+				
+				login_pw_lbl.style.display 		= '';
+				relogin_pw_lbl.style.display 	= '';
+				login_pw.style.display 			= '';
+				relogin_pw.style.display 		= '';
+				login_pw.disabled 				= false;
+				relogin_pw.disabled		 		= false;
+			}
+		} else {
+			alert('비밀번호가 다릅니다.');
+		}
+	}
+	$("#relogin_pw").on("propertychange change keyup paste input", function() {
+        
+		// 현재 변경된 데이터 셋팅
+		newValue = $(this).val();
+		
+		var login_pw 	= document.getElementById('login_pw');
+		var new_passwd_chk_spn 	= document.getElementById('new_passwd_chk_spn');
+			new_passwd_chk_spn.style.fontSize = '8px';
+		if(login_pw.value == relogin_pw.value) {
+			new_passwd_chk_spn.innerHTML = '비밀번호 일치';
+			new_passwd_chk_spn.style.color = 'blue';
+		} else {
+			new_passwd_chk_spn.innerHTML = '비밀번호 불일치';
+			new_passwd_chk_spn.style.color = 'red';
+		}
+		
+	});
+
+	//selectDomain change email2 change
+	function emailSelect() {
+		document.getElementById('email2').value = document.getElementById('selectDomain').value;
+	}
+
+	//사진 등록 이미지 Thumbnail
+	function loadImg(obj){
+        if(obj.files.length != 0 && obj.files[0] != 0){
+            var reader = new FileReader();  //파일 정보 읽어오는 js객체
+            reader.readAsDataURL(obj.files[0]);
+            reader.onload = function(e){    //파일 정보를 읽어오면 실행되는 함수
+                $("#photo_upload").attr("src", e.target.result);
+                $("#photo_upload").attr('width', 150);
+            }
+        }else{
+            $("#photo_upload").attr("src","");
+        }
+    }
+
+</script>
+
+
+<!--우편번호 검색 스크립트-->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    // 우편번호 찾기 화면을 넣을 element
+    var element_layer = document.getElementById('layer');
+
+    function closeDaumPostcode() {
+        // iframe을 넣은 element를 안보이게 한다.
+        element_layer.style.display = 'none';
+    }
+
+    function sample2_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample2_extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("sample2_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('hm_zip').value = data.zonecode;
+                document.getElementById("hm_adr_1").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("hm_adr_2").value = "";
+                document.getElementById("hm_adr_2").focus();
+
+                // iframe을 넣은 element를 안보이게 한다.
+                // (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
+                element_layer.style.display = 'none';
+            },
+            width : '100%',
+            height : '100%',
+            maxSuggestItems : 5
+        }).embed(element_layer);
+
+        // iframe을 넣은 element를 보이게 한다.
+        element_layer.style.display = 'block';
+
+        // iframe을 넣은 element의 위치를 화면의 가운데로 이동시킨다.
+        initLayerPosition();
+    }
+
+    // 브라우저의 크기 변경에 따라 레이어를 가운데로 이동시키고자 하실때에는
+    // resize이벤트나, orientationchange이벤트를 이용하여 값이 변경될때마다 아래 함수를 실행 시켜 주시거나,
+    // 직접 element_layer의 top,left값을 수정해 주시면 됩니다.
+    function initLayerPosition(){
+        var width = 300; //우편번호서비스가 들어갈 element의 width
+        var height = 400; //우편번호서비스가 들어갈 element의 height
+        var borderWidth = 5; //샘플에서 사용하는 border의 두께
+
+        // 위에서 선언한 값들을 실제 element에 넣는다.
+        element_layer.style.width = width + 'px';
+        element_layer.style.height = height + 'px';
+        element_layer.style.border = borderWidth + 'px solid';
+        // 실행되는 순간의 화면 너비와 높이 값을 가져와서 중앙에 뜰 수 있도록 위치를 계산한다.
+        element_layer.style.left = (((window.innerWidth || document.documentElement.clientWidth) - width)/2 - borderWidth) + 'px';
+        element_layer.style.top = (((window.innerHeight || document.documentElement.clientHeight) - height)/2 - borderWidth) + 'px';
+    }
+</script>
+</html>

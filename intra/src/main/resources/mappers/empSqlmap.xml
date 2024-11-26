@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Emp.EmpDao">
+
+	<resultMap type="com.champit.intra.vo.Company" id="Company">
+		<result column="emp_no" 		property="emp_no"/>
+		<result column="login_id" 		property="login_id"/>
+		<result column="login_pw" 		property="login_pw"/>
+		<result column="name" 			property="name"/>
+		<result column="rank_c" 		property="rank_c"/>
+		<result column="in_d" 			property="in_d"/>
+		<result column="out_d" 			property="out_d"/>
+		<result column="prjt_id" 		property="prjt_id"/>
+		<result column="emp_c" 			property="emp_c"/>
+		<result column="photo_id" 		property="photo_id"/>
+		<result column="aut_c" 			property="aut_c"/>
+		<result column="ucamp" 			property="ucamp"/>
+		<result column="depart_cd" 		property="depart_cd"/>
+		<result column="ssn" 			property="ssn"/>
+		<result column="sex_cd" 		property="sex_cd"/>
+		<result column="snh_in_d" 		property="snh_in_d"/>
+		<result column="memo" 			property="memo"/>
+		<result column="cus_no" 		property="cus_no  "/>
+		<result column="ots_ctr_div_cd" property="ots_ctr_div_cd"/>
+		<result column="bsn_no" 		property="bsn_no"/>
+		<result column="payment_date" 	property="payment_date"/>
+		<result column="prch_mgr" 		property="prch_mgr"/>
+	</resultMap>
+
+	<resultMap type="com.champit.intra.vo.Career" id="Career">
+		<result column="emp_no" 		property="emp_no"/>
+		<result column="out_com_yy" 	property="out_com_yy"/>
+		<result column="out_com_mm" 	property="out_com_mm"/>
+		<result column="out_etc_yy" 	property="out_etc_yy"/>
+		<result column="out_etc_mm" 	property="out_etc_mm"/>
+		<result column="school_cd" 		property="school_cd"/>
+		<result column="license_cd" 	property="license_cd"/>
+		<result column="military_cd" 	property="military_cd"/>
+		<result column="promotion_ym" 	property="promotion_ym"/>
+		<result column="schedule_ym" 	property="schedule_ym"/>
+	</resultMap>
+
+	<resultMap type="com.champit.intra.vo.Emp" id="Emp">
+		<result column="emp_no" 	property="emp_no"/>
+		<result column="bth_d" 		property="bth_d"/>
+		<result column="bth_c" 		property="bth_c"/>
+		<result column="hm_phn_1" 	property="hm_phn_1"/>
+		<result column="hm_phn_2" 	property="hm_phn_2"/>
+		<result column="hm_phn_3" 	property="hm_phn_3"/>
+		<result column="mb_phn_1" 	property="mb_phn_1"/>
+		<result column="mb_phn_2" 	property="mb_phn_2"/>
+		<result column="mb_phn_3" 	property="mb_phn_3"/>
+		<result column="off_phn_1" 	property="off_phn_1"/>
+		<result column="off_phn_2" 	property="off_phn_2"/>
+		<result column="off_phn_3" 	property="off_phn_3"/>
+		<result column="hm_adr_1" 	property="hm_adr_1"/>
+		<result column="hm_adr_2" 	property="hm_adr_2"/>
+		<result column="email" 		property="email"/>
+		<result column="hm_zip" 	property="hm_zip"/>
+		<result column="em_phn_1" 	property="em_phn_1"/>
+		<result column="em_phn_2" 	property="em_phn_2"/>
+		<result column="em_phn_3" 	property="em_phn_3"/>
+
+		<result column="prjt_nm" 	property="prjt_nm"/>
+		<result column="rank_nm" 	property="rank_nm"/>
+		<result column="hm_phn" 	property="hm_phn"/>
+		<result column="mb_phn" 	property="mb_phn"/>
+		<result column="emp_nm" 	property="emp_nm"/>
+		<result column="aut_nm" 	property="aut_nm"/>
+
+		<collection property="company" 	resultMap="Company"/> <!--company Join-->
+		<collection property="career" 	resultMap="Career"/>  <!--career Join-->
+	</resultMap>
+
+	
+
+
+   <select id="getEmpList" parameterType="String" resultMap="Emp">
+		SELECT (SELECT prjt_nm FROM project WHERE SUBSTR(b.prjt_id, 1, 6) = prjt_id) AS prjt_nm
+            , rank_c
+            , (SELECT memo FROM code WHERE b.rank_c = code2 AND code1 = '008') AS rank_nm
+			, a.emp_no
+            , b.name
+            , CASE WHEN a.hm_phn_1 = ' ' AND a.hm_phn_2 = ' ' AND a.hm_phn_3 = ' ' THEN ' '
+              ELSE a.hm_phn_1 ||'-'|| a.hm_phn_2 ||'-'|| a.hm_phn_3 END AS hm_phn
+            , CASE WHEN a.mb_phn_1 = ' ' AND a.mb_phn_2 = ' ' AND a.mb_phn_3 = ' ' THEN ' '
+              ELSE a.mb_phn_1 ||'-'|| a.mb_phn_2 ||'-'|| a.mb_phn_3 END AS mb_phn
+            , TO_CHAR(TO_DATE(a.bth_d, 'yyyymmdd'), 'yyyy-MM-dd') AS bth_d
+            , TO_CHAR(TO_DATE(b.in_d, 'yyyymmdd'), 'yyyy-MM-dd') AS in_d
+            , (SELECT memo FROM code WHERE b.emp_c = code2 AND code1 = '007') AS emp_nm
+            , (SELECT memo FROM code WHERE b.aut_c = code2 AND code1 = '042') AS aut_nm
+        FROM emp a
+        JOIN company b
+        ON a.emp_no = b.emp_no
+        WHERE b.emp_c = '1'
+        ORDER BY rank_c DESC, b.in_d
+	</select>
+
+	<!--입사년도 기준 사원번호 자동생성-->
+	<select id="getMaxEmpNo" parameterType="String" resultType="com.champit.intra.vo.Emp">
+		WITH m AS (
+			SELECT TO_CHAR(emp_no + 1) AS max_emp_no_m
+			FROM
+			(
+				SELECT CASE WHEN c.emp_no IS NULL THEN CONCAT('1', TO_CHAR(sysdate, 'yy'), '0000')
+					ELSE c.emp_no END AS emp_no
+				FROM (
+						SELECT MAX(a.emp_no) AS emp_no
+						FROM emp a
+						JOIN company b
+						ON a.emp_no = b.emp_no
+						WHERE  SUBSTR(a.emp_no, 1, 3) = CONCAT('1', TO_CHAR(sysdate, 'yy'))
+				) c
+			)x
+		), f AS (
+			SELECT TO_CHAR(emp_no + 1) AS max_emp_no_f
+			FROM
+			(
+				SELECT CASE WHEN c.emp_no IS NULL THEN CONCAT('2', TO_CHAR(sysdate, 'yy'), '0000')
+					ELSE c.emp_no END AS emp_no
+				FROM (
+						SELECT MAX(a.emp_no) AS emp_no
+						FROM emp a
+						JOIN company b
+						ON a.emp_no = b.emp_no
+						WHERE  SUBSTR(a.emp_no, 1, 3) = CONCAT('2', TO_CHAR(sysdate, 'yy'))
+				) c
+			)x
+		)
+		SELECT max_emp_no_m
+			 , max_emp_no_f 
+		  FROM m, f
+	</select>
+
+	<select id="getEmpInfo" parameterType="String" resultMap="Emp">
+		SELECT a.emp_no
+     		 , TO_CHAR(TO_DATE(a.bth_d, 'yyyymmdd'), 'yyyy-MM-dd') AS bth_d
+			 , a.bth_c
+			 , a.hm_phn_1
+			 , a.hm_phn_2
+			 , a.hm_phn_3
+			 , a.mb_phn_1
+			 , a.mb_phn_2
+			 , a.mb_phn_3
+			 , a.off_phn_1
+			 , a.off_phn_2
+			 , a.off_phn_3
+			 , a.hm_zip
+			 , a.hm_adr_1
+			 , a.hm_adr_2
+			 , a.email
+			 , a.em_phn_1
+			 , a.em_phn_2
+			 , a.em_phn_3
+			 , b.login_id
+			 , b.login_pw
+			 , b.name
+			 , b.rank_c
+     		 , TO_CHAR(TO_DATE(b.in_d, 'yyyymmdd'), 'yyyy-MM-dd') AS in_d
+			 , b.prjt_id
+			 , b.emp_c
+			 , b.photo_id
+			 , b.aut_c
+			 , b.ucamp
+			 , b.depart_cd
+			 , b.ssn
+			 , b.sex_cd
+             , CASE WHEN TRIM(b.snh_in_d) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(b.snh_in_d, 'yyyymmdd'), 'yyyy-MM-dd') END AS snh_in_d
+             , b.memo
+             , b.payment_date
+             , c.out_com_yy
+             , c.out_com_mm
+             , c.out_etc_yy
+             , c.out_etc_mm
+             , c.school_cd
+             , c.license_cd
+             , c.military_cd
+             , CASE WHEN TRIM(c.promotion_ym) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(c.promotion_ym, 'yyyymm'), 'yyyy-MM') END AS promotion_ym
+             , CASE WHEN TRIM(c.schedule_ym) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(c.schedule_ym, 'yyyymm'), 'yyyy-MM') END AS schedule_ym
+		 FROM emp a
+		 JOIN company b
+		   ON a.emp_no = b.emp_no
+		 JOIN career c
+		   ON a.emp_no = c.emp_no
+		WHERE a.emp_no = #{emp_no}
+	</select>
+
+	<update id="updateEmp">
+		UPDATE emp
+		   SET bth_d 	 = #{bth_d}
+			 , bth_c 	 = #{bth_c}
+			 , hm_phn_1  = #{hm_phn_1}
+			 , hm_phn_2  = #{hm_phn_2}
+			 , hm_phn_3  = #{hm_phn_3}
+			 , mb_phn_1  = #{mb_phn_1}
+			 , mb_phn_2  = #{mb_phn_2}
+			 , mb_phn_3  = #{mb_phn_3}
+			 , off_phn_1 = #{off_phn_1}
+			 , off_phn_2 = #{off_phn_2}
+			 , off_phn_3 = #{off_phn_3}
+			 , hm_adr_1  = #{hm_adr_1}
+			 , hm_adr_2  = #{hm_adr_2}
+			 , email 	 = #{email}
+			 , hm_zip 	 = #{hm_zip}
+			 , em_phn_1  = #{em_phn_1}
+			 , em_phn_2  = #{em_phn_2}
+			 , em_phn_3  = #{em_phn_3}
+		 WHERE emp_no = #{emp_no}
+	</update>
+
+
+</mapper>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}"
+>
+<!-- pikaday -->
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" crossorigin="anonymous"></script>
+<head>
+	
+</head>
+
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+	body {
+		margin: 0;
+		font-family: 'Montserrat', sans-serif;
+	}
+	.wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 100vh;
+	}
+	.container {
+		padding: 50px;
+		font-weight: 900;
+	}
+	.jb-a {
+		width: 80px;
+		margin: 0px auto;
+		position: relative
+	}
+	.jb-c {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+	}
+	.jb-c {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		display: none;
+	}
+	.jb-a:hover .jb-c {
+		display: block;
+	}
+</style>
+
+<body>
+    <div th:if="${session.login_id == null}">
+	<div class="wrapper">
+	  <div class="item">
+		<table  class="cart">
+			<tr>
+				<td colspan="3" style="text-align: center;">
+					<img th:src="@{/img/champit.png}"
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<form th:action="@{/th/login/loginChk}" th:method="post" id="form" enctype="multipart/form-data">
+						<table>
+							<tr>
+								<td>
+									로그인ID
+								</td>
+								<td>
+									<input type="text" name="login_id" id="login_id">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									로그인PW
+								</td>
+								<td>
+									<input type="text" name="login_pw" id="login_pw">
+								</td>
+							</tr>
+						</table>
+					</form>
+				</td>
+				<td>
+					<div class="jb-a">
+						<img id="lock_png" th:src="@{/img/login/lock.png}" alt="" class="jb-b" style="width:80px">
+						<img id="lock_gif" th:src="@{/img/login/lock.gif}" alt="" class="jb-c" style="width:80px">
+					</div>
+				</td>
+			</tr>
+		</table>
+	  </div>
+	</div>
+</body>
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+
+		var actionForm = $("form"); //form 태그 객체
+		function formSubmit(){
+			actionForm
+				.attr("action", "/th/login/loginChk")
+				.attr("method","post")
+				.submit();
+		};
+
+
+	</script>
+</th:block>
+
+<script>
+	$('#lock_gif').click(function(){
+		if($('#login_id').val() == '' && $('#login_pw').val() == ''){
+			alert('아이디 / 비밀번호를 입력해주세요.');
+		} else if ($('#login_id').val() == ''){
+			alert('아이디를 입력해주세요.');
+		} else if ($('#login_pw').val() == ''){
+			alert('비밀번호를 입력해주세요.');
+		} 
+		if($('#login_id').val() != '' && $('#login_pw').val() != ''){
+			formSubmit();
+		}
+	})
+</script>
+<script lang="javascript">
+	var uid = '<%=(String)session.getAttribute("uid")%>';
+	console.log(uid);
+</script>
+</html>

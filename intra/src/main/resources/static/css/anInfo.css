@@ -1,0 +1,71 @@
+.parent {
+	display: flex;
+	justify-content: center;
+}
+
+h3 {
+	text-align: center;
+	font-weight: bold;
+}
+
+.member2 {
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 25%;
+    margin-right: 20%;
+    
+    width : 80%;
+    padding: 10px;
+    
+}
+.btn2{
+	display: flex;
+	flex-direction: column;
+	align-items: right;
+	
+	font-size: 15px;
+	flex-basis: 50%;
+	background-color : #02b875;
+	font-weight: bold;
+}
+
+.divLine{
+	width: 100%;
+	border: 1px solid #02b875;
+}
+
+textarea {
+	width: 100%;
+	height: 300px;
+	resize : none;
+}
+
+.info{
+	width: 200%;
+}
+
+.card-body {
+	display: flex;
+	justify-content: space-between;
+}
+
+.card-body a {
+	align-self: flex-end;
+}
+
+.body-subtitle {
+	display: flex;
+	flex-direction: column;
+}
+
+.card-subtitle {
+	font-size: 18px;
+}
+
+.article {
+	padding: 10px;
+}
+

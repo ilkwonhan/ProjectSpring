@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.champit.intra.SpringBoot.service.dao.Career.CareerDao">
+
+
+  <update id="updateCareer">
+    UPDATE career
+        SET out_com_yy = #{out_com_yy}
+          , out_com_mm = #{out_com_mm}
+          , out_etc_yy = #{out_etc_yy}
+          , out_etc_mm = #{out_etc_mm}
+          , promotion_ym = #{promotion_ym}
+          , schedule_ym = #{schedule_ym}
+          , school_cd = #{school_cd}
+          , license_cd = #{license_cd}
+          , military_cd = #{military_cd}
+      WHERE emp_no = #{emp_no}
+  </update> 
+
+</mapper>

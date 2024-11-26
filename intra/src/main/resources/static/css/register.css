@@ -1,0 +1,45 @@
+@charset "UTF-8";
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+form {
+	width: 50vw;
+}
+
+.form-control {
+	width: 50vw;
+}
+
+#pwcheck {
+	display: none;
+	font-size: small;
+}
+
+.id-section {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.idchk {
+	width: 20vw;
+	padding: 10px 15px;
+	margin-left: 10px;
+	flex-basis: 20%;
+}
+
+.invalid-id {
+	color: red;
+	font-size: small;
+}
+
+.valid-id {
+	color: #02b875;
+	font-size: small;
+}
+
+

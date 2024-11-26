@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}"
+>
+<head>
+
+<!-- kakaoMap key -->
+<script type="text/javascript"
+	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=98fb16dd10fac1f048b0114b6c29ab02&libraries=services"
+></script>
+
+<!-- This CSS -->
+<link rel="stylesheet" href="/css/offerPage.css">
+
+</head>
+<th:block th:replace="~{layout/header :: header}"></th:block>
+
+<body>
+
+	<div layout:fragment="content" class="content">
+
+	<div class="container">
+	
+		<!--페이지 번호  -->
+		<input type="hidden" name="page" th:value="${requestDTO.page}">
+		<input type="hidden" name="type" th:value="${requestDTO.type}">
+		<input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+
+
+		<h2>구인 글 수정</h2>
+
+
+		<form th:action="@{/offer/modify}" th:method="post" id="form1">
+
+
+			<!-- 게시판 번호, 작성자 -->
+			<div class="form-group">
+				<input type="hidden" class="form-control" name="ono" th:value="${dto.ono}" placeholder="">
+				<input type="hidden" class="form-control" name="id" th:value="${dto.id}" placeholder="">
+			</div>
+			<hr>
+
+
+			<!-- 제목 -->
+			<div class="form-group">
+				<label for="exampleFormControlFile1">제목</label>
+				<input type="text" class="form-control" name="title" th:value="${dto.title}" placeholder="">
+			</div>
+			<hr>
+
+			<!-- 이미지 -->
+			<div class="form-group">
+				<label for="exampleFormControlFile1">이미지: </label>
+				<input class="form-control" type="file" id="formFile" name="file" th:value="${dto.img}">
+			</div>
+			<hr>
+
+			<!-- map -->
+			<div class="d-flex justify-content-left">
+				<input type="text"  class="form-control" id="addr_i"
+					onkeydown="javascript : if (event.keyCode == 13) {openCloseToc();setZoomable}"
+					th:value="${dto.map}"
+				>
+				<input type="hidden" name="map" id="addr_h">
+
+				<button type="button" class="btn btn-success" id="addr_b" onclick="openCloseToc();">입력</button>
+			</div>
+			<hr>
+
+			<div class="maphidden" id='maphidden'>
+				<div id="myMap"></div>
+			</div>
+			<hr>
+
+			<!-- textarea -->
+			<div class="form-group">
+				<textarea class="form-control" placeholder="구인 정보를 적어주세요." id="floatingTextarea2" name="content" wrap="hard">[[${dto.content}]]</textarea>
+			</div>
+			<hr>
+
+
+		</form>
+		<!-- button -->
+		<div class="d-flex justify-content-center">
+
+			<button type="button" class="btn btn-success modify_b">수정</button>
+			<button type="button" class="btn btn-secondary cancel_b">취소</button>
+			<button type="button" class="btn btn-danger remove_b">삭제</button>
+		</div>
+	</div>
+
+	</div>
+
+</body>
+
+
+<!-- 각 페이지의 스크립트가 작성될 위치 -->
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		
+	var actionForm = $("form"); //form 태그 객체
+
+    $(".remove_b").click(function(){
+
+        actionForm
+            .attr("action", "/offer/remove")
+            .attr("method","post");
+
+        actionForm.submit();
+
+    });
+
+    $(".modify_b").click(function() {
+
+        if(!confirm("수정하시겠습니까?")){
+            return ;
+        }
+
+        actionForm
+            .attr("action", "/offer/modify")
+            .attr("method","post")
+            .submit();
+    });
+
+    $(".cancel_b").click(function() {
+
+        //var pageInfo = $("input[name='page']");
+        var page = $("input[name='page']");
+        var type = $("input[name='type']");
+        var keyword = $("input[name='keyword']");
+
+        actionForm.empty(); //form 태그의 모든 내용을 지우고
+
+        actionForm.append(page);
+        actionForm.append(type);
+        actionForm.append(keyword);
+
+
+        actionForm
+            .attr("action", "/offer/list")
+            .attr("method","get");
+
+        actionForm.submit();
+
+    })
+	
+	
+
+		// Map view
+
+		$(document).ready(function() {
+
+			document.getElementById('maphidden').style.display = 'block';
+			var inputData = [ $('#addr_i').val() ]
+
+			var mapContainer = document.getElementById('myMap'), mapOption = {
+				center : new kakao.maps.LatLng(37.560570745754, 	126.8282268948),
+				level : 3
+			};
+			var map = new kakao.maps.Map(mapContainer, mapOption);
+			var count = 0;
+			var ps = new kakao.maps.services.Places();
+			var bounds = new kakao.maps.LatLngBounds();
+
+			if (inputData != null) {
+				kewwordSearch(inputData[count]);
+			}
+
+			function kewwordSearch(keword) {
+				ps.keywordSearch(keword, placesSearchCB);
+				count = count + 1;
+			}
+
+			function placesSearchCB(data, status, pagination) {
+				if (status === kakao.maps.services.Status.OK) {
+					displayMarker(data[0]);
+					bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
+					if (count < inputData.length) {
+						kewwordSearch(inputData[count]);
+					} else if (count == inputData.length) {
+						setBounds();
+					}
+				}
+			}
+
+			function displayMarker(place) {
+				var marker = new kakao.maps.Marker({
+					map : map,
+					position : new kakao.maps.LatLng(place.y, place.x),
+				});
+				kakao.maps.event.addListener(marker, 'click', function() {
+					var position = this.getPosition();
+					var url = 'https://map.kakao.com/link/map/' + place.id;
+					window.open(url, '_blank');
+				});
+			}
+
+			function setBounds() {
+				map.setBounds(bounds, 90, 30, 10, 30);
+			}
+			map.setZoomable(false); // wheel zoom false
+
+		})
+
+		// Map search
+
+		<!-- map search -->
+		function openCloseToc() {
+			event.preventDefault();
+			document.getElementById('maphidden').style.display = 'block';
+
+			var inputData = [$('#addr_i').val()]
+
+			var mapContainer = document
+				.getElementById('myMap'), mapOption = {
+					center: new kakao.maps.LatLng(37.54699, 127.09598),
+					level: 3
+				};
+			var map = new kakao.maps.Map(mapContainer, mapOption);
+			var count = 0;
+			var ps = new kakao.maps.services.Places();
+			var bounds = new kakao.maps.LatLngBounds();
+
+			if (inputData != null) {
+				kewwordSearch(inputData[count]);
+			}
+
+			function kewwordSearch(keword) {
+				ps.keywordSearch(keword, placesSearchCB);
+				count = count + 1;
+			}
+
+			function placesSearchCB(data, status,
+				pagination) {
+				if (status === kakao.maps.services.Status.OK) {
+					displayMarker(data[0]);
+					bounds.extend(new kakao.maps.LatLng(
+						data[0].y, data[0].x));
+					if (count < inputData.length) {
+						kewwordSearch(inputData[count]);
+					} else if (count == inputData.length) {
+						setBounds();
+					}
+				}
+			}
+
+			function displayMarker(place) {
+				var marker = new kakao.maps.Marker({ map: map, position: new kakao.maps.LatLng(place.y, place.x), });
+				kakao.maps.event
+					.addListener(
+						marker,
+						'click',
+						function () {
+							var position = this.getPosition();
+							var url = 'https://map.kakao.com/link/map/' + place.id;
+							window.open(url, '_blank');
+						});
+			}
+
+			function setBounds() {
+				map.setBounds(bounds, 90, 30, 10, 30);
+			}
+			map.setZoomable(false); // wheel zoom false
+			
+			$('#addr_h').val($('#addr_i').val());
+			console.log($('#addr_h').val());
+			
+		}
+
+	</script>
+</th:block>
+</html>

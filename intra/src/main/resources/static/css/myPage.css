@@ -1,0 +1,122 @@
+
+.container {
+	width: 
+}
+
+.parent {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+img {
+	width: 200px;
+	height: 200px;
+	margin-bottom: 15px;
+}
+
+.info {
+	width: 35rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.card-title {
+	text-align: center;
+	font-size: x-large;
+}
+
+.id {
+	font-size: small;
+	font-weight: normal;
+}
+
+.card-button {
+	display: flex;
+	justify-content: center;
+}
+
+.btns {
+	flex-basis: 50%;
+	color: #02b875;
+	font-weight: bold;
+	text-align: center;
+}
+
+.menu {
+	width: 35rem;
+	text-align: center;
+}
+
+.btn {
+	margin: 5px 0;
+}
+
+.toList {
+	width: 30%;
+	align-self: center;
+}
+
+form {
+	width: 50vw;
+}
+
+form h1 {
+	text-align: center;
+}
+
+.user-img {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.img-file-upload {
+	display: none;
+}
+
+.img-submit-btn {
+	width: 50vw;
+}
+
+.form-control {
+	width: 50vw;
+}
+
+.default-img {
+	width: 200px;
+	height: 200px;
+}
+
+.circle-layout {
+	width: 220px;
+	height: 220px;
+	border-radius: 70%;
+	overflow: hidden;
+}
+
+.circle-img {
+	width: 100%;
+	height: 100%;
+}
+
+.offerList {
+	width: 70%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 30px;
+}
+
+table {
+	text-align: center;
+}
+
+table .num, .date {
+	width: 15%;
+}
+table .title {
+	width: 70%;
+}
+
+
