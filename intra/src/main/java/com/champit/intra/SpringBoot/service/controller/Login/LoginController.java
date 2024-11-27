@@ -59,7 +59,8 @@ public class LoginController {
 		  return mav;
     }
 
-    @PostMapping(value = "/loginChk")
+    @SuppressWarnings("null")
+	@PostMapping(value = "/loginChk")
     public String loginChk(final HttpServletRequest request, String login_id, String login_pw, Model model) throws Exception {
       
       String url = "";
@@ -73,7 +74,7 @@ public class LoginController {
 
         Emp emp = empService.getEmpInfo(emp_no);
 
-				httpSession.setMaxInactiveInterval(1800);
+		httpSession.setMaxInactiveInterval(1800);
         httpSession.setAttribute("SEmpNo", emp.getEmp_no());
         httpSession.setAttribute("aut_c", emp.getCompany().getAut_c());
         httpSession.setAttribute("loginChk", "success");

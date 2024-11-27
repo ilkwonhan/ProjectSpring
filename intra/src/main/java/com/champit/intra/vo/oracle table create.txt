@@ -1,0 +1,332 @@
+DROP TABLE IF EXISTS career;
+CREATE TABLE career (
+  EMP_NO varchar2(10) NOT NULL,
+  OUT_COM_YY number(4) DEFAULT NULL,
+  OUT_COM_MM number(4) DEFAULT NULL,
+  OUT_ETC_YY number(4) DEFAULT NULL,
+  OUT_ETC_MM number(4) DEFAULT NULL,
+  SCHOOL_CD varchar2(2) NOT NULL,
+  LICENSE_CD varchar2(2) DEFAULT NULL,
+  MILITARY_CD varchar2(2) NOT NULL,
+  PROMOTION_YM varchar2(6) NOT NULL,
+  SCHEDULE_YM varchar2(6) NOT NULL,
+CONSTRAINT career_pk  PRIMARY KEY (EMP_NO)
+);
+
+
+DROP TABLE IF EXISTS code;
+-- CODE_NAME size change(20 -> 30)
+CREATE TABLE code (
+  CODE1 varchar2(10) NOT NULL,
+  CODE2 varchar2(10) NOT NULL,
+  CODE_NAME varchar2(30) NOT NULL,
+  MEMO varchar2(50) NOT NULL,
+  MEMO2 varchar2(50) DEFAULT NULL,
+CONSTRAINT code_pk  PRIMARY KEY (CODE1,CODE2)
+);
+
+DROP TABLE IF EXISTS company;
+
+CREATE TABLE company (
+  EMP_NO varchar2(10) NOT NULL,
+  LOGIN_ID varchar2(20) DEFAULT NULL,
+  LOGIN_PW varchar2(256) DEFAULT NULL,
+  NAME varchar2(10) DEFAULT NULL,
+  RANK_C varchar2(2) DEFAULT NULL,
+  IN_D varchar2(8) DEFAULT NULL,
+  OUT_D varchar2(8) DEFAULT NULL,
+  PRJT_ID varchar2(10) DEFAULT NULL,
+  EMP_C varchar2(2) DEFAULT NULL,
+  PHOTO_ID varchar2(20) DEFAULT NULL,
+  AUT_C varchar2(1) DEFAULT NULL,
+  UCAMP number(4) DEFAULT NULL,
+  DEPART_CD varchar2(2)  DEFAULT NULL,
+  SSN varchar2(256) DEFAULT NULL,
+  SEX_CD varchar2(1)  DEFAULT NULL,
+  SNH_IN_D varchar2(8) DEFAULT NULL,
+  MEMO varchar2(1000) DEFAULT NULL,
+  payment_date varchar2(1000) DEFAULT NULL,
+CONSTRAINT company_pk  PRIMARY KEY (EMP_NO)
+);
+
+
+DROP TABLE IF EXISTS emp;
+
+CREATE TABLE emp (
+  EMP_NO varchar2(10) DEFAULT NULL,
+  BTH_D varchar2(8) DEFAULT NULL,
+  BTH_C varchar2(1) DEFAULT NULL,
+  HM_PHN_1 varchar2(3) DEFAULT NULL,
+  HM_PHN_2 varchar2(4) DEFAULT NULL,
+  HM_PHN_3 varchar2(4) DEFAULT NULL,
+  MB_PHN_1 varchar2(3) DEFAULT NULL,
+  MB_PHN_2 varchar2(4) DEFAULT NULL,
+  MB_PHN_3 varchar2(4) DEFAULT NULL,
+  OFF_PHN_1 varchar2(3) DEFAULT NULL,
+  OFF_PHN_2 varchar2(4) DEFAULT NULL,
+  OFF_PHN_3 varchar2(4) DEFAULT NULL,
+  HM_ADR_1 varchar2(100) NOT NULL,
+  HM_ADR_2 varchar2(100) NOT NULL,
+  EMAIL varchar2(50) DEFAULT NULL,
+  HM_ZIP varchar2(6) NOT NULL,
+  EM_PHN_1 varchar2(4) DEFAULT NULL,
+  EM_PHN_2 varchar2(4) DEFAULT NULL,
+  EM_PHN_3 varchar2(4) DEFAULT NULL,
+CONSTRAINT emp_pk  PRIMARY KEY (EMP_NO)
+);
+
+
+DROP TABLE IF EXISTS holiday;
+
+CREATE TABLE holiday (
+  HOLIDAY varchar2(10) NOT NULL,
+  MEMO varchar2(30) NOT NULL,
+CONSTRAINT holiday_pk  PRIMARY KEY (HOLIDAY)
+);
+
+
+DROP TABLE IF EXISTS job_history;
+
+CREATE TABLE job_history (
+  SEQ number(11) NOT NULL,
+  EMP_NO varchar2(10) NOT NULL,
+  PRJT_ID varchar2(10) NOT NULL,
+  JOB_DATE varchar2(10) NOT NULL,
+  FROM_SI varchar2(2) NOT NULL,
+  FROM_BUN varchar2(2) NOT NULL,
+  TO_SI varchar2(2) NOT NULL,
+  TO_BUN varchar2(2) NOT NULL,
+  MEMO varchar2(100) NOT NULL,
+CONSTRAINT job_history_pk  PRIMARY KEY (SEQ,EMP_NO,PRJT_ID)
+);
+
+
+DROP TABLE IF EXISTS keep_pc;
+-- ASSETS_NO SIZE CHANGE(15 -> 25)
+CREATE TABLE keep_pc (
+  ASSETS_NO varchar2(25) NOT NULL,
+  ITEM_CD varchar2(3) NOT NULL,
+  BUY_D varchar2(8) NOT NULL,
+  BUY_AMT number(12) NOT NULL,
+  PRJT_ID varchar2(10) NOT NULL,
+  USE_NM varchar2(20) DEFAULT NULL,
+  MODEL_NM varchar2(100) DEFAULT NULL,
+  SERIAL_NO varchar2(20) DEFAULT NULL,
+  PRODUCT_INFO varchar2(100) DEFAULT NULL,
+  RAM varchar2(10) DEFAULT NULL,
+  HDD varchar2(10) DEFAULT NULL,
+  SSD varchar2(10) DEFAULT NULL,
+  PURCHAS_NM varchar2(20) DEFAULT NULL,
+  DISCARD_D varchar2(8) DEFAULT NULL,
+  MEMO varchar2(500) DEFAULT NULL,
+CONSTRAINT keep_pc_pk  PRIMARY KEY (ASSETS_NO)
+);
+
+
+DROP TABLE IF EXISTS keep_sw;
+-- PURCHAS_NM size change(20 -> 30)
+CREATE TABLE keep_sw (
+  ITM_NM varchar2(100) NOT NULL,
+  BUY_D varchar2(8) NOT NULL,
+  BUY_AMT number(12) NOT NULL,
+  CNT number(7) NOT NULL,
+  TOT_AMT number(12) NOT NULL,
+  PRJT_IDC varchar2(10) DEFAULT NULL,
+  PURCHAS_NM varchar2(30) DEFAULT NULL,
+  VALD_D varchar2(8) DEFAULT NULL,
+  MEMO varchar2(500) DEFAULT NULL,
+CONSTRAINT keep_sw_pk  PRIMARY KEY (ITM_NM)
+);
+
+
+DROP TABLE IF EXISTS login_log;
+
+CREATE TABLE login_log (
+  LOG_DATE date default sysdate,
+  LOGIN_ID varchar2(20) DEFAULT NULL,
+  URL_TARGET varchar2(10) DEFAULT NULL,
+  AUTHENTICATION_RESULT varchar2(4) DEFAULT NULL
+);
+
+
+
+DROP TABLE IF EXISTS project;
+
+CREATE TABLE project (
+  PRJT_ID varchar2(10) NOT NULL,
+  PRJT_NM varchar2(100) NOT NULL,
+  SRT_D varchar2(8) DEFAULT NULL,
+  END_D varchar2(8) DEFAULT NULL,
+  CUS_NM varchar2(100) NOT NULL,
+  MACHIN varchar2(20) DEFAULT NULL,
+  LANG varchar2(20) DEFAULT NULL,
+  TOOL varchar2(50) DEFAULT NULL,
+CONSTRAINT project_pk  PRIMARY KEY (PRJT_ID)
+);
+
+
+DROP TABLE IF EXISTS vacation;
+
+CREATE TABLE vacation (
+  EMP_NO varchar2(10) NOT NULL,
+  YEAR varchar2(4) NOT NULL,
+  SEQ varchar2(3) NOT NULL,
+  VAC_D varchar2(8) NOT NULL,
+  VAC_C varchar2(2) NOT NULL,
+  RESNON varchar2(50) DEFAULT NULL,
+  ACPT_NM varchar2(20) DEFAULT NULL,
+  AUTH_EMP_NO varchar2(10) DEFAULT NULL,
+  AUTH_D varchar2(8) DEFAULT NULL,
+  AUTH_C varchar2(1) DEFAULT NULL,
+  AUTH_MEMO varchar2(50) DEFAULT NULL,
+  PRJT_ID varchar2(10) NOT NULL,
+CONSTRAINT vacation_pk  PRIMARY KEY (EMP_NO,YEAR,SEQ)
+);
+
+
+DROP TABLE IF EXISTS vacationmaster;
+
+CREATE TABLE vacationmaster (
+  EMP_NO varchar2(10) NOT NULL,
+  YEAR varchar2(4) NOT NULL,
+  total_vac number DEFAULT NULL,
+  use_vac number DEFAULT NULL,
+  education number(11) DEFAULT NULL,
+  training number(11) DEFAULT NULL,
+  f_event number(11) DEFAULT NULL,
+CONSTRAINT vacationmaster_pk  PRIMARY KEY (EMP_NO,YEAR)
+);
+
+
+DROP TABLE IF EXISTS vacationmaster_bak;
+
+CREATE TABLE vacationmaster_bak (
+  EMP_NO varchar2(10) NOT NULL,
+  YEAR varchar2(4) NOT NULL,
+  total_vac number DEFAULT NULL,
+  use_vac number DEFAULT NULL,
+  education number(11) DEFAULT NULL,
+  training number(11) DEFAULT NULL,
+  f_event number(11) DEFAULT NULL
+);
+
+
+DROP TABLE IF EXISTS new_vacationmaster;
+
+CREATE TABLE new_vacationmaster (
+  EMP_NO varchar2(10) NOT NULL,
+  YEAR varchar2(4) NOT NULL,
+  total_vac number DEFAULT NULL,
+  useable_vac number DEFAULT NULL,
+CONSTRAINT new_vacationmaster_pk  PRIMARY KEY (EMP_NO,YEAR)
+);
+
+-- Test Data
+INSERT INTO career VALUES (
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1', 
+	'202305', 
+	'202305'
+);
+
+INSERT INTO emp VALUES(
+	'1',
+	'20230503',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1'
+);
+
+INSERT INTO company VALUES(
+	'1',
+	'20230506',
+	'1',
+	'NAME',
+	'1',
+	'20230502',
+	'',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'1',
+	'',
+	'1',
+	'1'
+);
+
+commit;
+
+SELECT a.emp_no
+     , TO_CHAR(TO_DATE(a.bth_d, 'yyyymmdd'), 'yyyy-MM-dd') AS bth_d
+     , a.bth_c
+     , a.hm_phn_1
+     , a.hm_phn_2
+     , a.hm_phn_3
+     , a.mb_phn_1
+     , a.mb_phn_2
+     , a.mb_phn_3
+     , a.off_phn_1
+     , a.off_phn_2
+     , a.off_phn_3
+     , a.hm_zip
+     , a.hm_adr_1
+     , a.hm_adr_2
+     , a.email
+     , a.em_phn_1
+     , a.em_phn_2
+     , a.em_phn_3
+     , b.login_id
+     , b.login_pw
+     , b.name
+     , b.rank_c
+     , TO_CHAR(TO_DATE(b.in_d, 'yyyymmdd'), 'yyyy-MM-dd') AS in_d
+     , b.prjt_id
+     , b.emp_c
+     , b.photo_id
+     , b.aut_c
+     , b.ucamp
+     , b.depart_cd
+     , b.ssn
+     , b.sex_cd
+     , CASE WHEN TRIM(b.snh_in_d) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(b.snh_in_d, 'yyyymmdd'), 'yyyy-MM-dd') END AS snh_in_d
+     , b.memo
+     , b.payment_date
+     , c.out_com_yy
+     , c.out_com_mm
+     , c.out_etc_yy
+     , c.out_etc_mm
+     , c.school_cd
+     , c.license_cd
+     , c.military_cd
+     , CASE WHEN TRIM(c.promotion_ym) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(c.promotion_ym, 'yyyymm'), 'yyyy-MM') END AS promotion_ym
+     , CASE WHEN TRIM(c.schedule_ym) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(c.schedule_ym, 'yyyymm'), 'yyyy-MM') END AS schedule_ym
+ FROM emp a
+ JOIN company b
+   ON a.emp_no = b.emp_no
+ JOIN career c
+   ON a.emp_no = c.emp_no
+WHERE a.emp_no = '1';
